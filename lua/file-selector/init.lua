@@ -56,11 +56,11 @@ function M.create_file_selector()
     vim.api.nvim_buf_set_keymap(buf, "n", "<Space>", "", {
       callback = function()
         local line_num = vim.api.nvim_win_get_cursor(0)[1]
-        if line_num <= 6 then
+        if line_num <= 1 then
           return
         end
         local line = vim.api.nvim_buf_get_lines(buf, line_num - 1, line_num, false)[1]
-        local file_index = line_num - 6
+        local file_index = line_num - 1
         local filename = all_files[file_index]
 
         if line:match("^%[x%]") then
@@ -80,9 +80,7 @@ function M.create_file_selector()
     vim.api.nvim_buf_set_keymap(buf, "n", "<leader>sa", "", {
       callback = function()
         local new_lines = {}
-        for i = 1, 6 do
-          table.insert(new_lines, vim.api.nvim_buf_get_lines(buf, i - 1, i, false)[1])
-        end
+        table.insert(new_lines, vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1])
         for _, file in ipairs(all_files) do
           table.insert(new_lines, "[x] " .. file)
           selected[file] = true
@@ -96,9 +94,7 @@ function M.create_file_selector()
     vim.api.nvim_buf_set_keymap(buf, "n", "<leader>sc", "", {
       callback = function()
         local new_lines = {}
-        for i = 1, 6 do
-          table.insert(new_lines, vim.api.nvim_buf_get_lines(buf, i - 1, i, false)[1])
-        end
+        table.insert(new_lines, vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1])
         for _, file in ipairs(all_files) do
           table.insert(new_lines, "[ ] " .. file)
         end
@@ -140,7 +136,7 @@ function M.create_file_selector()
   --   vim.api.nvim_buf_add_highlight(buf, -1, "Comment", i - 1, 0, -1)
   -- end
 
-  vim.api.nvim_win_set_cursor(0, { 7, 0 })
+  vim.api.nvim_win_set_cursor(0, { 2, 0 })
 end
 
 return M

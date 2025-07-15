@@ -3,7 +3,7 @@ local M = {}
 -- Get all files in current directory and subdirectories
 local function get_all_files()
   local files = {}
-  local handle = io.popen("find . -type f 2>/dev/null")
+  local handle = io.popen("find . -type f -not -path '*/.*' 2>/dev/null")
   if handle then
     for line in handle:lines() do
       local clean_path = line:gsub("^%./", "")

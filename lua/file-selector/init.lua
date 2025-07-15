@@ -3,14 +3,29 @@ local M = {}
 -- Get all files in current directory and subdirectories
 local function get_all_files()
   local files = {}
-  local handle = io.popen("find . -type f -not -path '*/.*' 2>/dev/null")
+  local command
+
+  -- Check if inside a git repository by looking for the .git directory
+  local f = io.open(".git", "r")
+  if f then
+    f:close()
+    -- Use git ls-files which respects .gitignore
+    command = "git ls-files --cached --others --exclude-standard"
+  else
+    -- Fallback to find, excluding hidden files and directories
+    command = "find . -type f -not -path '*/.*'"
+  end
+
+  local handle = io.popen(command .. " 2>/dev/null")
   if handle then
     for line in handle:lines() do
+      -- Clean up the path by removing the leading './'
       local clean_path = line:gsub("^%./", "")
       table.insert(files, clean_path)
     end
     handle:close()
   end
+
   table.sort(files)
   return files
 end
